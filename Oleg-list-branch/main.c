@@ -13,16 +13,14 @@ int main()
 		printf("a[%d] = %d [%p]\n", k, array[k], &array[k]);
 	}
 
-	Iter i = list_iter_begin(myList);
+	Iter i = myList->m->begin(myList);
 	for (k = 0; k < N; k++) {
 		myList->m->iter_insert(&i, (void *) (array + k));
-		//printf("%d\n", myList->m->iter_next(&i));
-		//list_insertToEnd(myList, (void *) (array + k));
 	}
 
 	Iter j = i;
 	printf("\n\n\n");
-	for (i = list_iter_begin(myList); !myList->m->iter_zeroEqual(i); 
+	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i); 
 			myList->m->iter_next(&i))
 		printf("%d\n", *((int *) myList->m->get(i)));
 	printf("\n\n\n");
@@ -30,7 +28,7 @@ int main()
 	myList->m->iter_prev(&i);
 	myList->m->elemDelete(&i);
 
-	for (i = list_iter_begin(myList); !myList->m->iter_zeroEqual(i);
+	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i);
 	     myList->m->iter_next(&i)) {
 		for (j = i; !myList->m->iter_zeroEqual(j);
 		     myList->m->iter_next(&j)) {
@@ -40,15 +38,10 @@ int main()
 			}
 		}
 	}
-	i = list_iter_begin(myList);
+	i = myList->m->begin(myList);
 	for (; !myList->m->iter_zeroEqual(i); myList->m->iter_next(&i))
 		printf("%d\n", *((int *) myList->m->get(i)));
-	//printf("%s\n", (char*)list_iter_get(iter));
-	list_delete(myList);
+	myList->m->delete(myList);
 
 	return 0;
 }
-
-/*
-yur@virtuozzo.com
-*/
