@@ -3,10 +3,11 @@
 #define N 5
 #include "container.h"
 
+
 int main()
 {
 	int k = 0;
-	List *myList = list_create();
+	List *myList = CREATE();
 	int array[N] = { };
 	for (k = 0; k < N; k++) {
 		array[k] = rand() % 50;
@@ -21,7 +22,7 @@ int main()
 
 	Iter j = i;
 	printf("\n\n");
-	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i); 
+	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i);
 			myList->m->iter_next(&i))
 		printf("%d\n", *((int *) myList->m->get(i)));
 	printf("\n\n");
