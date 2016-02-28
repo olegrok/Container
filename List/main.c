@@ -16,16 +16,22 @@ int main()
 	Iter i = myList->m->begin(myList);
 	for (k = 0; k < N; k++) {
 		myList->m->iter_insert(&i, (void *) (array + k));
+		myList->m->insertToEnd(myList, (void *) (array + k));
 	}
 
 	Iter j = i;
-	printf("\n\n\n");
+	printf("\n\n");
 	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i); 
 			myList->m->iter_next(&i))
 		printf("%d\n", *((int *) myList->m->get(i)));
-	printf("\n\n\n");
+	printf("\n\n");
 
+	//printf("myList->m->iter_next(&i) = %d\n", myList->m->iter_next(&i));
 	myList->m->iter_prev(&i);
+
+	//myList->m->iter_prev(&i);
+	//myList->m->iter_prev(&i);
+
 	myList->m->elemDelete(&i);
 
 	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i);

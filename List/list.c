@@ -1,32 +1,3 @@
-/*
-list_next
-list_get
-*next->list_next();
-*get_list_get();
-*begin...
-list_create()
-{
-
-	m = malloc();
-	m->next=list_next();
-	begin=
-}
-
-вывод
-вставка\удаление
-сортировка
-
-	create
-	delete
-	insert ()
-	delet_elem
-	get_elem
-
-logo model library
-OplenGL
-SDL
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "list.h"
@@ -62,27 +33,30 @@ void 	*list_iter_get(Iter p);
 Elem *add_elem()
 {
 	Elem *elem = calloc(1, sizeof(Elem));
-	//printf("added elem: %p\n", elem);
+	//printf("alloc elem: %p\n", elem);
 	return elem;
 }
 
 void delete_elem(Elem * p)
 {
+	//printf("free %p\n", p);
 	free(p);
 	p = NULL;
 }
 
 void delete_allElems(Elem * p)
 {
-	if (p->next != 0)
+	if (p->next)
 		delete_allElems(p->next);
 	delete_elem(p);
 }
 
 int list_iter_prev(Iter * p)
 {
+	if(!p)
+		return -1;
 	Elem *elem = p->indx;
-	if(elem->prev == NULL)
+	if(!elem || !(elem->prev))
 		return -1;
 	p->indx = elem->prev;
 	return 0;
@@ -91,6 +65,7 @@ int list_iter_prev(Iter * p)
 int list_iter_zeroEqual(Iter p)
 {
 	Elem *elem = p.indx;
+	//printf("elem %p -> %p\n", elem, elem->next);
 	//printf("zeroEqual_elem = %p\n", elem);
 	if (elem->next == NULL)
 		return 1;
@@ -101,8 +76,7 @@ int list_iter_zeroEqual(Iter p)
 
 int list_iter_next(Iter *p)
 {
-	//printf("before list_iter_next elem = %p\n", p->indx);
-	if(list_iter_zeroEqual(*p))
+	if(!p || list_iter_zeroEqual(*p))
 		return -1;
 	Elem *elem = p->indx;
 	//printf("wait list_iter_next elem = %p\n", elem->next);
@@ -127,7 +101,7 @@ Iter list_iter_begin(void *p)
 Iter list_iter_end(void *p)
 {
 	List *l = p;
-	Iter it = {l->head, p};
+	Iter it = { l->head, p };
 	//for (; !list_iter_zeroEqual(it); list_iter_next(&it));
 	//printf("LOOP ENDED\n");
 	//Elem* elem = it->indx;
@@ -141,8 +115,9 @@ Iter list_iter_end(void *p)
 List *list_create()
 {
 	List *p = calloc(1, sizeof(List));
-	p->head = add_elem();
-	p->tail = p->head;
+	//printf("alloc List: %p\n", p);
+	p->tail = add_elem();
+	p->head = p->tail;
 	//printf("it: p->start %p\n", p->start);
 	p->head->prev = NULL;
 	p->head->next = NULL;
@@ -156,18 +131,27 @@ void list_delete(void *p)
 	List *l = p;
 	delete_allElems(l->head);
 	free(p);
+	//printf("free List\n");
 }
 
 int list_elem_delete(Iter *p)
 {
-	Elem *buf = p->indx;
-	if(buf->prev)
-		buf->prev->next = buf->next;
-	if(buf->next == NULL)
+	if(!p)
 		return -1;
-	buf->next->prev = buf->prev;
-	delete_elem(buf);
-	list_iter_next(p);
+	Elem *elem = p->indx;
+	if(!elem || !(elem->next))
+		return -1;
+	if(elem->prev)
+		elem->prev->next = elem->next;
+	else
+	{
+		List *l = p->obj;
+		l->head = elem->next;
+	}
+	
+	elem->next->prev = elem->prev;
+	p->indx = elem->next;
+	delete_elem(elem);
 	return 0;
 }
 
@@ -192,8 +176,6 @@ int list_insertToBegin(void *p, void *data)
 
 void list_insertTo(Iter *p, void *data)
 {
-	Elem *newElem = add_elem();
-	newElem->data = data;
 	//if(p->index->next == NULL)
 	Elem *elem = p->indx;
 	//printf("start elem %p\n", elem);
@@ -205,22 +187,24 @@ void list_insertTo(Iter *p, void *data)
 		p->indx = l->head;
 		return;
 	}
-	
+	Elem *newElem = add_elem();
+	newElem->data = data;
+
 	elem->prev->next = newElem;
 	newElem->prev = elem->prev;
 	newElem->next = elem;
 	elem->prev = newElem;
 	p->indx = newElem;
-	printf("end elem %p\n", p->indx);
+	//printf("end elem %p\n", p->indx);
 }
 
 int list_insertToEnd(void *l, void *data)
 {
 	List *p = l;
 	//printf("p->start[%p]->next = %p\n",p->start, p->start->next);
-	if (p->head->next == NULL) {
+	/*if (p->head->next == NULL) {
 		return list_insertToBegin(p, data);
-	}
+	}*/
 	Iter it = list_iter_end(p);
 	//printf("it: list_iter_end %p\n", it->indx);
 	//Elem* elem = it -> indx;

@@ -1,18 +1,22 @@
-CFLAGS=-c -Wall -g
+.PHONY : clean
+CC=gcc
+CFLAGS=-c -Wextra -g
 
 all: list
 
 list: main.o list.o container.o
-	gcc main.o list.o container.o -o list -g -Wextra
+	$(CC) main.o list.o container.o -o $@ -g -Wextra
 
 main.o: main.c
-	gcc -c main.c -Wextra -g
+	$(CC) $(CFLAGS) main.c
 	
 list.o: list.c
-	gcc -c list.c -Wextra -g
+	$(CC) $(CFLAGS) list.c
 
 container.o: container.c
-	gcc -c container.c -Wextra -g
+	$(CC) $(CFLAGS) container.c
 
 clean:
 	rm -rf *.o list
+oclean:
+	rm -rf *.o
