@@ -48,7 +48,7 @@ int main()
 	i = myList->m->begin(myList);
 	for (; !myList->m->iter_zeroEqual(i); myList->m->iter_next(&i))
 		printf("%d\n", *((int *) myList->m->get(i)));
-	myList->m->delete(myList);
+	myList->m->destroy(myList);
 
 	return 0;
 }

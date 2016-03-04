@@ -18,8 +18,8 @@ void 	delete_allElems(Elem * p);
 int 	list_iter_zeroEqual(Iter p);
 int 	list_iter_next(Iter * p);
 int 	list_iter_prev(Iter * p);
-Iter 	list_iter_begin(void *p);
-Iter 	list_iter_end(void *p);
+Iter 	list_iter_begin(const void *p);
+Iter 	list_iter_end(const void *p);
 List 	*list_create();
 void 	list_delete(void *p);
 int 	list_elem_delete(Iter *p);
@@ -86,7 +86,7 @@ int list_iter_next(Iter *p)
 	return 0;
 }
 
-Iter list_iter_begin(void *p)
+Iter list_iter_begin(const void *p)
 {
 	List *l = p;
 	Iter it = { l->head, p };
@@ -98,7 +98,7 @@ Iter list_iter_begin(void *p)
 	return it;
 }
 
-Iter list_iter_end(void *p)
+Iter list_iter_end(const void *p)
 {
 	List *l = p;
 	Iter it = { l->head, p };
@@ -106,7 +106,7 @@ Iter list_iter_end(void *p)
 	//printf("LOOP ENDED\n");
 	//Elem* elem = it->indx;
 	//printf("Last: %p\n", it->indx);
-	//printf("Last-prev: %p\n", elem->prev);        
+	//printf("Last-prev: %p\n", elem->prev);
 	//if(elem != NULL)
 	//      printf("Last-next: %p\n", elem->next);
 	return it;
@@ -148,7 +148,7 @@ int list_elem_delete(Iter *p)
 		List *l = p->obj;
 		l->head = elem->next;
 	}
-	
+
 	elem->next->prev = elem->prev;
 	p->indx = elem->next;
 	delete_elem(elem);
@@ -233,4 +233,3 @@ void *list_iter_get(Iter p)
 	Elem *elem = p.indx;
 	return elem->data;
 }
-

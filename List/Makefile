@@ -1,13 +1,13 @@
 .PHONY : clean
 .PHONY : oclean
-CC=gcc
-CFLAGS=-c -Wextra -g
+#CC=gcc
+CFLAGS=-c -Wextra -g -Wall
 CONT=list
 
 all: list
 
 list: main.o list.o container.o
-	$(CC) main.o list.o container.o -o $@ -g -Wextra -DCREATE=$(CONT)_create
+	$(CC) *.o -o $@ -g -Wextra -DCREATE=$(CONT)_create
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c -DCREATE=$(CONT)_create
