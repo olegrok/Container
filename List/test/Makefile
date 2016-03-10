@@ -27,11 +27,12 @@ all : $(TESTS)
 clean :
 	rm -f $(TESTS) gtest.a gtest_main.a *.o
 
+
 # Builds gtest.a and gtest_main.a.
 
 # Usually you shouldn't tweak such internal variables, indicated by a
 # trailing _.
-GTEST_SRCS_ = *.cc $(USER_DIR)/container.h $(GTEST_HEADERS)
+GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
 # For simplicity and to avoid depending on Google Test's
 # implementation details, the dependencies specified below are
@@ -58,14 +59,14 @@ gtest_main.a : gtest-all.o gtest_main.o
 ##sample1.o : $(USER_DIR)/sample1.cc $(USER_DIR)/sample1.h $(GTEST_HEADERS)
 ##	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/sample1.cc
 
-list.o: list.c
-	$(CC) $(CXXFLAGS) $(USER_DIR)/$^ -o $@
-
-container.o: container.c
-	$(CC) $(CXXFLAGS) $(USER_DIR)/$^ -o $@
+list.o: $(USER_DIR)/list.c $(USER_DIR)/list.h
+	$(CC) $(CXXFLAGS) $(USER_DIR)/list.c -c -o list.o
+container.o: $(USER_DIR)/container.c $(USER_DIR)/container.h
+		$(CC) $(CXXFLAGS) $(USER_DIR)/container.c -c -o container.o
+#test.o: list.o container.o
 
 unittest.o : Unittest.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $^ -o $@
 
-unittest : $(USER_DIR)/list.o $(USER_DIR)/container.o unittest.o gtest_main.a
+unittest : list.o container.o unittest.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@

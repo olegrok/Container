@@ -18,13 +18,13 @@ void 	delete_allElems(Elem * p);
 int 	list_iter_zeroEqual(Iter p);
 int 	list_iter_next(Iter * p);
 int 	list_iter_prev(Iter * p);
-Iter 	list_iter_begin(const void *p);
-Iter 	list_iter_end(const void *p);
+Iter 	list_iter_begin(void *p);
+Iter 	list_iter_end(void *p);
 List 	*list_create();
 void 	list_delete(void *p);
 int 	list_elem_delete(Iter *p);
 int 	list_insertToBegin(void *p, void *data);
-void 	list_insertTo(Iter * p, void *data);
+int 	list_insertTo(Iter * p, void *data);
 int 	list_insertToEnd(void *p, void *data);
 void 	list_swap(Iter * it_1, Iter * it_2);
 void 	*list_iter_get(Iter p);
@@ -86,7 +86,7 @@ int list_iter_next(Iter *p)
 	return 0;
 }
 
-Iter list_iter_begin(const void *p)
+Iter list_iter_begin(void *p)
 {
 	List *l = p;
 	Iter it = { l->head, p };
@@ -98,7 +98,7 @@ Iter list_iter_begin(const void *p)
 	return it;
 }
 
-Iter list_iter_end(const void *p)
+Iter list_iter_end(void *p)
 {
 	List *l = p;
 	Iter it = { l->head, p };
@@ -139,7 +139,7 @@ int list_elem_delete(Iter *p)
 	if(!p)
 		return -1;
 	Elem *elem = p->indx;
-	if(!elem || !(elem->next))
+	if(!elem || list_iter_zeroEqual(*p))
 		return -1;
 	if(elem->prev)
 		elem->prev->next = elem->next;
@@ -174,7 +174,7 @@ int list_insertToBegin(void *p, void *data)
 	return 0;
 }
 
-void list_insertTo(Iter *p, void *data)
+int list_insertTo(Iter *p, void *data)
 {
 	//if(p->index->next == NULL)
 	Elem *elem = p->indx;
@@ -183,9 +183,11 @@ void list_insertTo(Iter *p, void *data)
 	List* l = p->obj;
 	if(l->head == p->indx)
 	{
-		list_insertToBegin(l, data);
-		p->indx = l->head;
-		return;
+		if(list_insertToBegin(l, data) == 0)
+		  p->indx = l->head;
+    else
+      return -1;
+		return 0;
 	}
 	Elem *newElem = add_elem();
 	newElem->data = data;
@@ -196,6 +198,7 @@ void list_insertTo(Iter *p, void *data)
 	elem->prev = newElem;
 	p->indx = newElem;
 	//printf("end elem %p\n", p->indx);
+  return 0;
 }
 
 int list_insertToEnd(void *l, void *data)
