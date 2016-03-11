@@ -23,7 +23,7 @@ typedef
 
 List *list_create();
 
-void list_delete(void *p);
+int list_delete(void *p);
 Iter list_iter_begin(void *p);
 Iter list_iter_end(void *p);
 int list_insertToBegin(void *p, void *data);
@@ -36,6 +36,7 @@ int list_insertTo(Iter *p, void *data);
 void *list_iter_get(Iter p);
 int list_iter_zeroEqual(Iter p);
 void list_swap(Iter *p, Iter *q);
+void list_foreach(void *p, void (*func)(void*, void*), void *data);
 
 #ifdef __cplusplus
 }

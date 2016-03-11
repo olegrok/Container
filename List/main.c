@@ -3,6 +3,13 @@
 #define N 5
 #include "container.h"
 
+void print_value(void* v_elem, void* v_sum)
+{
+	printf("PRINT_VALUE\n");
+	int* elem = (int*)v_elem;
+	int* sum = (int*)v_sum;
+	*sum += *elem;
+}
 
 int main()
 {
@@ -20,8 +27,12 @@ int main()
 		myList->m->insertToEnd(myList, (void *) (array + k));
 	}
 
+	int sum = 0;
+	myList->m->foreach(myList, print_value, &sum);
+	printf("SUM = %d\n", sum);
+
+
 	Iter j = i;
-	printf("\n\n");
 	for (i = myList->m->begin(myList); !myList->m->iter_zeroEqual(i);
 			myList->m->iter_next(&i))
 		printf("%d\n", *((int *) myList->m->get(i)));

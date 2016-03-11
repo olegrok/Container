@@ -12,7 +12,7 @@ List* list_create();
 
 typedef
     struct container_methods {
-	void (*destroy) (void *);
+	int (*destroy) (void *);
 	Iter(*begin) (void *);
 	Iter(*end) (void *);
 	int (*insertToBegin) (void *, void *);
@@ -25,7 +25,7 @@ typedef
 	void *(*get) (Iter);
 	int (*iter_zeroEqual) (Iter);
 	void (*iter_swap) (Iter *, Iter *);
-
+  void (*foreach) (void*, void (*func)(void*, void*), void*);
 } ContMet;
 
 #ifdef __cplusplus

@@ -17,8 +17,15 @@ TEST(Create, List)
   EXPECT_TRUE(p->m->iter_zeroEqual(it_end));
 }
 
-//delete elements
 TEST(Delete, List)
+{
+  List* p = list_create();
+  EXPECT_TRUE(p);
+  EXPECT_EQ(p->m->destroy(p), 0);
+}
+
+//delete elements
+TEST(DeleteElem, List)
 {
     int N = 200;
     List* p = list_create();
@@ -171,5 +178,37 @@ TEST(bubbleSort, listInsertToBeginAndEnd){
          }
 
 }
+
+
+
+void sum(void* v_elem, void* v_sum)
+{
+  int* sum = (int*)v_sum;
+  int* elem = (int*)v_elem;
+  (*sum) += *elem;
+}
+
+TEST(foreach, List)
+{
+  List* p = list_create();
+  EXPECT_TRUE(p);
+
+  int array[N] = { };
+  for (int i = 0; i < N; i++) {
+    array[i] = rand() % 20;
+  }
+  int array_sum = 0;
+  for(int i = 0; i < N; i++)
+  {
+    array_sum += array[i];
+  }
+  for (int i = 0; i < N; i++) {
+    EXPECT_EQ(p->m->insertToBegin(p, (void *) (array + i)), 0);
+  }
+
+  int cont_sum = 0;
+  p->m->foreach(p, sum, &cont_sum);
+  EXPECT_EQ(cont_sum, array_sum);
+  }
 
 #undef N

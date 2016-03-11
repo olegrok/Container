@@ -21,14 +21,14 @@ int 	list_iter_prev(Iter * p);
 Iter 	list_iter_begin(void *p);
 Iter 	list_iter_end(void *p);
 List 	*list_create();
-void 	list_delete(void *p);
+int  	list_delete(void *p);
 int 	list_elem_delete(Iter *p);
 int 	list_insertToBegin(void *p, void *data);
 int 	list_insertTo(Iter * p, void *data);
 int 	list_insertToEnd(void *p, void *data);
 void 	list_swap(Iter * it_1, Iter * it_2);
 void 	*list_iter_get(Iter p);
-
+void foreach(void *p, void (*func)(void*, void*), void *data);
 
 Elem *add_elem()
 {
@@ -126,11 +126,14 @@ List *list_create()
 	return p;
 }
 
-void list_delete(void *p)
+int list_delete(void *p)
 {
+  if(p == NULL || ((List*)p)->head == NULL)
+    return -1;
 	List *l = p;
 	delete_allElems(l->head);
 	free(p);
+  return 0;
 	//printf("free List\n");
 }
 
@@ -235,4 +238,13 @@ void *list_iter_get(Iter p)
 {
 	Elem *elem = p.indx;
 	return elem->data;
+}
+
+void list_foreach(void *p, void (*func)(void*, void*), void *data)
+{
+  Iter it = list_iter_begin(p);
+  for(; !list_iter_zeroEqual(it); list_iter_next(&it))
+  {
+    func(list_iter_get(it), data);
+  }
 }

@@ -6,5 +6,5 @@ ContMet list_m = {
 	list_insertToBegin, list_insertToEnd, list_elem_delete,
 	list_iter_prev, list_iter_next,
 	list_insertTo, list_iter_get,
-	list_iter_zeroEqual, list_swap
+	list_iter_zeroEqual, list_swap, list_foreach
 };
