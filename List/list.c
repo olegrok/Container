@@ -6,7 +6,7 @@
 extern struct container_methods list_m;
 
 typedef
-    struct listElem {
+struct listElem {
 	void *data;
 	struct listElem *prev;
 	struct listElem *next;
@@ -101,7 +101,7 @@ Iter list_iter_begin(void *p)
 Iter list_iter_end(void *p)
 {
 	List *l = p;
-	Iter it = { l->head, p };
+	Iter it = { l->tail, p };
 	//for (; !list_iter_zeroEqual(it); list_iter_next(&it));
 	//printf("LOOP ENDED\n");
 	//Elem* elem = it->indx;
@@ -207,17 +207,7 @@ int list_insertTo(Iter *p, void *data)
 int list_insertToEnd(void *l, void *data)
 {
 	List *p = l;
-	//printf("p->start[%p]->next = %p\n",p->start, p->start->next);
-	/*if (p->head->next == NULL) {
-		return list_insertToBegin(p, data);
-	}*/
 	Iter it = list_iter_end(p);
-	//printf("it: list_iter_end %p\n", it->indx);
-	//Elem* elem = it -> indx;
-	//printf("it: list_iter_end->next %p\n", elem->next);
-	//printf("it: list_iter_end->prev %p\n", elem->prev);
-	//list_iter_prev(it);
-	//printf("it: list_iter_prev %p\n", it->indx);
 	list_insertTo(&it, data);
 	//free(it);
 	return 0;

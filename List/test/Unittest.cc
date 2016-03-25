@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
+#include <iostream>
 
 //Create funclion
 TEST(Create, List)
@@ -15,12 +16,14 @@ TEST(Create, List)
   EXPECT_FALSE(p->m->get(it_end));
   EXPECT_TRUE(p->m->iter_zeroEqual(it_begin));
   EXPECT_TRUE(p->m->iter_zeroEqual(it_end));
+  EXPECT_EQ(p->m->destroy(p), 0);
 }
 
 TEST(Delete, List)
 {
   List* p = list_create();
   EXPECT_TRUE(p);
+  EXPECT_EQ(p->m->destroy(0), -1);
   EXPECT_EQ(p->m->destroy(p), 0);
 }
 
@@ -43,6 +46,7 @@ TEST(DeleteElem, List)
     EXPECT_EQ(p->m->get(it), &N);
     EXPECT_FALSE(p->m->elemDelete(&it));
     EXPECT_EQ(p->m->elemDelete(&it), -1);
+    EXPECT_EQ(p->m->destroy(p), 0);
 }
 //InsertTo function
 TEST(iterInsert, List)
@@ -60,11 +64,23 @@ TEST(iterInsert, List)
   void* pointer = (void*)0x321;
   p->m->iter_insert(&it_begin, pointer);
   EXPECT_EQ(p->m->get(it_begin), pointer);
+  EXPECT_EQ(p->m->destroy(p), 0);
+}
+
+TEST(iter_next, List)
+{
+  List* p = list_create();
+  EXPECT_TRUE(p);
+  Iter it_begin = p->m->begin(p);
+  EXPECT_EQ(p->m->iter_next(0), -1);
+  EXPECT_EQ(p->m->iter_next(&it_begin), -1);
+  p->m->iter_insert(&it_begin, (void*)2);
+  EXPECT_EQ(p->m->iter_next(&it_begin), 0);
 }
 
 
 //BubbleSort as a test of several functions
-#define N 1050
+#define N 5000
 
 TEST(bubbleSort, listInsertTo)
 {
@@ -112,6 +128,7 @@ for(int i = 0; i < N; i++){
   EXPECT_EQ(array[i], *((int *) p1->m->get(j)));
   p1->m->iter_next(&j);
 }
+  EXPECT_EQ(p1->m->destroy(p1), 0);
 }
 
 TEST(bubbleSort, listInsertToBeginAndEnd){
@@ -176,7 +193,8 @@ TEST(bubbleSort, listInsertToBeginAndEnd){
            EXPECT_EQ(*((int *) p2->m->get(k)), *((int *) p1->m->get(i)));
            p2->m->iter_next(&k);
          }
-
+  EXPECT_EQ(p1->m->destroy(p1), 0);
+  EXPECT_EQ(p2->m->destroy(p2), 0);
 }
 
 
@@ -209,6 +227,36 @@ TEST(foreach, List)
   int cont_sum = 0;
   p->m->foreach(p, sum, &cont_sum);
   EXPECT_EQ(cont_sum, array_sum);
+  EXPECT_EQ(p->m->destroy(p), 0);
   }
+
+  TEST(iter_prev, List)
+  {
+    List* p = list_create();
+    EXPECT_TRUE(p);
+    EXPECT_EQ(p->m->iter_prev(NULL), -1);
+    Iter it_begin = p->m->begin(p);
+    EXPECT_EQ(p->m->iter_prev(&it_begin), -1);
+
+    Iter it_end = p->m->end(p);
+    int array[N] = { };
+  	for (int i = 0; i < N; i++) {
+  		array[i] = rand() % 20;
+      EXPECT_EQ(p->m->iter_insert(&it_end, (void *) (array + i)), 0);
+      it_end = p->m->end(p);
+  	}
+
+    int i = N - 1;
+    while(p->m->iter_prev(&it_end) != -1){
+        EXPECT_EQ(array[i], *((int *) p->m->get(it_end)));
+        //printf("%d\n", array[i]);
+        i--;
+    }
+
+    p->m->destroy(p);
+
+  }
+
+
 
 #undef N
