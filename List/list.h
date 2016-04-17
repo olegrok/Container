@@ -8,14 +8,14 @@ extern "C" {
 typedef struct listElem Elem;
 
 typedef
-    struct list {
+struct list {
 	struct container_methods *m;
 	Elem *head;
 	Elem *tail;
 } List;
 
 typedef
-    struct iterator {
+struct iterator {
 	void *indx;
 	void *obj;
 } Iter;
